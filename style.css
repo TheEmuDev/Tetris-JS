@@ -1,0 +1,38 @@
+.container {
+    display: flex;
+    justify-content: center;
+    border: 2px solid #000000;
+}
+
+.grid {
+    width: 200px;
+    height: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    background-color:darkgray;
+}
+
+.grid div {
+    height: 20px;
+    width: 20px;
+}
+
+.tetromino {
+    background-color: springgreen;
+
+}
+
+.mini-grid {
+    margin-left: 50px;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    flex-wrap: wrap;
+    background-color:burlywood;
+}
+
+.mini-grid div {
+    height: 20px;
+    width: 20px;
+}
+
