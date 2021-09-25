@@ -152,21 +152,77 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function rotateRight() {
+
         undraw()
+
+        // check if current tetris piece is against one of the edges before rotation
+        const isAtRightEdge = current.some(index => (currentPosition + index) % width === width -1)
+        const isAtLeftEdge = current.some(index => (currentPosition + index) % width === 0)
+
         currentRotation++
         if(currentRotation === current.length) {
             currentRotation = 0
         }
+
         current = theTetrominoes[random][currentRotation]
+
+        // if current tetris piece was at right edge before rotating,
+        // check if piece bled into next row after rotation
+        // move piece left to correct rightward slide, repeat once if necessary (iTetromino piece will need 2 moves)
+        if(isAtRightEdge) { 
+            if(current.some(index => (currentPosition + index) % width === 0)) { 
+                currentPosition -= 1 
+                if(current.some(index => (currentPosition + index) % width === 0)) {
+                    currentPosition -= 1
+                }
+            }
+         }
+
+         // same as above, but on the other edge
+         if(isAtLeftEdge) {
+             if(current.some(index => (currentPosition + index) % width === width -1)) {
+                 currentPosition += 1
+                 if(current.some(index => (currentPosition + index) % width === width -1)) {
+                     currentPosition += 1
+                 }
+             }
+         }
     }
 
     function rotateLeft() {
         undraw()
+
+        const isAtRightEdge = current.some(index => (currentPosition + index) % width === width -1)
+        const isAtLeftEdge = current.some(index => (currentPosition + index) % width === 0)
+
         currentRotation--
         if(currentRotation < 0) {
             currentRotation = current.length-1
         }
+
         current = theTetrominoes[random][currentRotation]
+
+        // if current tetris piece was at right edge before rotating,
+        // check if piece bled into next row after rotation
+        // move piece left to correct rightward slide, repeat once if necessary (iTetromino piece will need 2 moves)
+        if(isAtRightEdge) { 
+            if(current.some(index => (currentPosition + index) % width === 0)) { 
+                currentPosition -= 1 
+                if(current.some(index => (currentPosition + index) % width === 0)) {
+                    currentPosition -= 1
+                }
+            }
+         }
+
+         // same as above, but on the other edge
+         if(isAtLeftEdge) {
+             if(current.some(index => (currentPosition + index) % width === width -1)) {
+                 currentPosition += 1
+                 if(current.some(index => (currentPosition + index) % width === width -1)) {
+                     currentPosition += 1
+                 }
+             }
+         }
     }
 
     const displaySquares = document.querySelectorAll('.mini-grid div')
