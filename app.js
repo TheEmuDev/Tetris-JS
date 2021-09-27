@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let nextRandom = 0
     let timerId
     let score = 0
-    const colors = [ 'cyan', 'yellow', 'purple', 'orange', 'blue', 'green', 'red' ]
+    const colors = [ 'cyan', 'yellow', 'orchid', 'orangered', 'blue', 'green', 'crimson' ]
 
     /**
      * The Tetrominoes
@@ -226,17 +226,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const displaySquares = document.querySelectorAll('.mini-grid div')
-    const displayWidth = 4
+    const displayWidth = 5
     let displayIndex = 0
 
     const upNextTetrominoes = [
-        [1, displayWidth+1,displayWidth*2+1,displayWidth*3+1],               // i-tetromino
-        [0, 1, displayWidth, displayWidth+1],                                // o-tetromino
-        [1, displayWidth, displayWidth+1, displayWidth+2],                   // t-tetromino
-        [1, displayWidth+1, displayWidth*2+1, 2],                            // l-tetromino
-        [2, displayWidth+2, displayWidth*2+1, displayWidth*2+2],             // j-tetromino
-        [displayWidth*2, displayWidth*2+1, displayWidth+1, displayWidth+2],  // s-tetromino
-        [displayWidth, displayWidth+1, displayWidth*2+1, displayWidth*2+2]   // z-tetromino
+        [2, displayWidth+2,displayWidth*2+2,displayWidth*3+2],                 // i-tetromino
+        [displayWidth+1, displayWidth+2, displayWidth*2+1, displayWidth*2+2],  // o-tetromino
+        [displayWidth+2, displayWidth*2+1, displayWidth*2+2, displayWidth*2+3],// t-tetromino
+        [displayWidth+2, displayWidth*2+2, displayWidth*3+2, displayWidth+3],  // l-tetromino
+        [displayWidth+3, displayWidth*2+3, displayWidth*3+2, displayWidth*3+3],// j-tetromino
+        [displayWidth*2+1, displayWidth*2+2, displayWidth+2, displayWidth+3],  // s-tetromino
+        [displayWidth+1, displayWidth+2, displayWidth*2+2, displayWidth*2+3]   // z-tetromino
     ]
 
     function displayShape() {
