@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
             moveRight()
         } else if (e.keyCode === 32 || e.keyCode === 17) {  // Space or 'CTRL' (both of them)
             //drop()
-        } else if (e.keyCode === 67) {
+        } else if (e.keyCode === 67) {                      // 'C'
             hold()
         }
     }
