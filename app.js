@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let heldPiece = 0
     let holdLock = false
     let isHolding = false
+    let stop = false
 
     let timerId
     let score = 0
@@ -149,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (e.keyCode === 68 || e.keyCode === 39) {  // 'D' or right arrow
             moveRight()
         } else if (e.keyCode === 32 || e.keyCode === 17) {  // Space or 'CTRL' (both of them)
-            //drop()
+            drop()
         } else if (e.keyCode === 67) {                      // 'C'
             hold()
         }
@@ -164,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function freeze() {
         if(current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
+            stop = true
             current.forEach(index => squares[currentPosition + index].classList.add('taken'))
             //start a new tetromino
             currentRotation = 0
@@ -279,7 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
          }
     }
 
-    
     function hold() {
         // hold lock is set to true when a player uses the hold ability
         // hold lock is set to false when the game starts and when a piece is played
@@ -314,6 +315,15 @@ document.addEventListener('DOMContentLoaded', () => {
             holdLock = true
             draw()
         }
+    }
+
+    function drop() {
+        while (!stop) {
+            moveDown()
+            freeze()
+        }
+
+        stop = false
     }
 
     function displayShape() {
