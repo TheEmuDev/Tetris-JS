@@ -19,6 +19,8 @@
 
 .tetromino {
     background-color:blueviolet;
+    outline-style: double;
+    outline-offset: -2px;
 }
 
 .hold-grid {

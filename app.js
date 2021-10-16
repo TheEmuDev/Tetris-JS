@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const width = 10
     let nextRandom = 0
     let heldPiece = 0
+    let playingGame = false
     let holdLock = false
     let isHolding = false
     let stop = false
@@ -112,9 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Start button functionality
     startButton.addEventListener('click', () => {
         if(timerId) {
+            playingGame = false
             clearInterval(timerId)
             timerId = null
         } else {
+            playingGame = true
             draw()
             timerId = setInterval(moveDown, 1000)
             nextRandom = Math.floor(Math.random()*theTetrominoes.length)
@@ -139,20 +142,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function control(e) { // use website 'keycode.info' to find keyCode values
-        if (e.keyCode === 87 || e.keyCode === 38) {         // 'W' or up arrow
-            rotateRight()
-        } else if (e.keyCode === 81) {                      // 'Q'
-            rotateLeft()
-        }else if (e.keyCode === 83 || e.keyCode === 40) {   // 'S' or down arrow
-            moveDown()
-        } else if(e.keyCode === 65 || e.keyCode === 37) {   // 'A' or left arrow
-            moveLeft()
-        } else if (e.keyCode === 68 || e.keyCode === 39) {  // 'D' or right arrow
-            moveRight()
-        } else if (e.keyCode === 32 || e.keyCode === 17) {  // Space or 'CTRL' (both of them)
-            drop()
-        } else if (e.keyCode === 67) {                      // 'C'
-            hold()
+        if(playingGame) {    
+            if (e.keyCode === 87 || e.keyCode === 38) {         // 'W' or up arrow
+                rotateRight()
+            } else if (e.keyCode === 81) {                      // 'Q'
+                rotateLeft()
+            }else if (e.keyCode === 83 || e.keyCode === 40) {   // 'S' or down arrow
+                moveDown()
+            } else if(e.keyCode === 65 || e.keyCode === 37) {   // 'A' or left arrow
+                moveLeft()
+            } else if (e.keyCode === 68 || e.keyCode === 39) {  // 'D' or right arrow
+                moveRight()
+            } else if (e.keyCode === 32 || e.keyCode === 17) {  // Space or 'CTRL' (both of them)
+                drop()
+            } else if (e.keyCode === 67) {                      // 'C'
+                hold()
+            }
         }
     }
 
