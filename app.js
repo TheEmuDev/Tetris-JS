@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const displayWidth = 5
     const holdWidth = 5
+    const maxWidth = 199
     
     let displayIndex = 0
     let holdIndex = 0
@@ -103,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         [holdWidth+1, holdWidth+2, holdWidth*2+2, holdWidth*2+3]     // z-tetromino
     ]
 
-
+    let previewPosition
     let currentPosition = 4
     let currentRotation = 0
 
@@ -119,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             playingGame = true
             draw()
+            findAndDrawPreview()
             timerId = setInterval(moveDown, 1000)
             nextRandom = Math.floor(Math.random()*theTetrominoes.length)
             displayShape()
@@ -139,6 +141,35 @@ document.addEventListener('DOMContentLoaded', () => {
             squares[currentPosition + index].classList.remove('tetromino')
             squares[currentPosition + index].style.backgroundColor = ''
         })
+    }
+
+    function drawPreview() {
+        current.forEach(index => {
+            squares[previewPosition + index].classList.add('tetromino-preview')
+        })
+    }
+
+    function undrawPreview() {
+        current.forEach(index => {
+            squares[previewPosition + index].classList.remove('tetromino-preview')
+        })
+    }
+
+    function findAndDrawPreview() {
+        let previewLocationFound = false
+        let i = 0
+        while(!previewLocationFound) {
+            previewPosition = currentPosition + i
+            if(current.some(index => squares[previewPosition + index + width].classList.contains('taken'))) {
+                current.forEach(index => squares[previewPosition + index].classList.add('tetromino-preview'))
+                previewLocationFound = true
+            } else if(previewPosition > maxWidth) {
+                console.log("Error")
+                break
+            }else {
+                i += width
+            }
+        }
     }
 
     function control(e) { // use website 'keycode.info' to find keyCode values
@@ -170,6 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function freeze() {
         if(current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
+            undrawPreview()
             stop = true
             current.forEach(index => squares[currentPosition + index].classList.add('taken'))
             //start a new tetromino
@@ -180,6 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentPosition = 4
             holdLock = false
             draw()
+            findAndDrawPreview()
             displayShape()
             addScore()
             gameOver()
@@ -188,6 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function moveLeft() {
         undraw()
+        undrawPreview()
         const isAtLeftEdge = current.some(index => (currentPosition + index) % width === 0)
 
         if(!isAtLeftEdge) currentPosition -= 1
@@ -197,10 +231,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         draw()
+        findAndDrawPreview()
     }
 
     function moveRight() {
         undraw()
+        undrawPreview()
         const isAtRightEdge = current.some(index => (currentPosition + index) % width === width -1)
 
         if(!isAtRightEdge) currentPosition += 1
@@ -210,11 +246,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         draw()
+        findAndDrawPreview()
     }
 
     function rotateRight() {
-
         undraw()
+        undrawPreview()
 
         // check if current tetris piece is against one of the edges before rotation
         const isAtRightEdge = current.some(index => (currentPosition + index) % width === width -1)
@@ -248,10 +285,14 @@ document.addEventListener('DOMContentLoaded', () => {
                  }
              }
          }
+
+         draw()
+         findAndDrawPreview()
     }
 
     function rotateLeft() {
         undraw()
+        undrawPreview()
 
         const isAtRightEdge = current.some(index => (currentPosition + index) % width === width -1)
         const isAtLeftEdge = current.some(index => (currentPosition + index) % width === 0)
@@ -284,6 +325,8 @@ document.addEventListener('DOMContentLoaded', () => {
                  }
              }
          }
+         draw()
+         findAndDrawPreview()
     }
 
     function hold() {
@@ -292,6 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if(!holdLock) {
             undraw()
+            undrawPreview()
             displayHeldSquares.forEach(square => {
                 square.classList.remove('tetromino')
                 square.style.backgroundColor = ''
@@ -318,6 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             currentPosition = 4
             holdLock = true
+            findAndDrawPreview()
             draw()
         }
     }
@@ -344,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addScore() {
-        for (let i=0; i < 199; i += width) {
+        for (let i=0; i < maxWidth; i += width) {
             const row = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8, i+9]
 
             if(row.every(index => squares[index].classList.contains('taken'))) {

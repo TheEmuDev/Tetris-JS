@@ -20,7 +20,13 @@
 .tetromino {
     background-color:blueviolet;
     outline-style: double;
-    outline-offset: -2px;
+    outline-offset: -3px;
+}
+
+.tetromino-preview {
+    outline-style: double;
+    outline-offset: -3px;
+    outline-color: white;
 }
 
 .hold-grid {
