@@ -118,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(timerId)
             timerId = null
         } else {
+            startButton.blur()
             playingGame = true
             draw()
             findAndDrawPreview()
