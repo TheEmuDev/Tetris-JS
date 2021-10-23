@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let displayIndex = 0
     let holdIndex = 0
 
+    let usedBonusTick = false
+
     let squares = Array.from(document.querySelectorAll('.grid div'))
     
     const width = 10
@@ -118,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(timerId)
             timerId = null
         } else {
+            startButton.blur()
             playingGame = true
             draw()
             findAndDrawPreview()
@@ -193,30 +196,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function moveDown() {
+        let overGround = current.some(index => squares[currentPosition + index + width].classList.contains('taken'))
+        
         undraw()
-        currentPosition += width
+        if(!overGround) {
+            currentPosition += width
+        }
         draw()
         freeze()
     }
 
     function freeze() {
         if(current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
-            undrawPreview()
-            stop = true
-            current.forEach(index => squares[currentPosition + index].classList.add('taken'))
-            //start a new tetromino
-            currentRotation = 0
-            random = nextRandom
-            nextRandom = Math.floor(Math.random() * theTetrominoes.length)
-            current = theTetrominoes[random][currentRotation]
-            currentPosition = 4
-            holdLock = false
-            draw()
-            findAndDrawPreview()
-            displayShape()
-            addScore()
-            gameOver()
-        }
+            if(usedBonusTick) {
+                undrawPreview()
+                stop = true
+                current.forEach(index => squares[currentPosition + index].classList.add('taken'))
+                //start a new tetromino
+                currentRotation = 0
+                random = nextRandom
+                nextRandom = Math.floor(Math.random() * theTetrominoes.length)
+                current = theTetrominoes[random][currentRotation]
+                currentPosition = 4
+                holdLock = false
+                addScore()
+                draw()
+                findAndDrawPreview()
+                displayShape()
+                gameOver()
+            } else { usedBonusTick = true }
+        } else if(usedBonusTick) { usedBonusTick = false }
     }
 
     function moveLeft() {
