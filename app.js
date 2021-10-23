@@ -212,10 +212,10 @@ document.addEventListener('DOMContentLoaded', () => {
             current = theTetrominoes[random][currentRotation]
             currentPosition = 4
             holdLock = false
+            addScore()
             draw()
             findAndDrawPreview()
             displayShape()
-            addScore()
             gameOver()
         }
     }
