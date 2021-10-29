@@ -20,10 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const width = 10
     let nextRandom = 0
     let heldPiece = 0
+
+    let gameStarted = false
     let playingGame = false
     let holdLock = false
     let isHolding = false
     let stop = false
+    let isGameOver = false
 
     let timerId
     let score = 0
@@ -119,14 +122,19 @@ document.addEventListener('DOMContentLoaded', () => {
             playingGame = false
             clearInterval(timerId)
             timerId = null
+        } else if (isGameOver) {
+            resetGame()
         } else {
             startButton.blur()
             playingGame = true
             draw()
             findAndDrawPreview()
             timerId = setInterval(moveDown, 1000)
-            nextRandom = Math.floor(Math.random() * theTetrominoes.length)
-            displayShape()
+            if (!gameStarted) {
+                nextRandom = Math.floor(Math.random() * theTetrominoes.length)
+                displayShape()
+                gameStarted = true
+            }
         }
     })
 
@@ -163,7 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let i = 0
         while (!previewLocationFound) {
             previewPosition = currentPosition + i
-            if (current.some(index => squares[previewPosition + index + width].classList.contains('taken'))) {
+            if (current.some(index => squares[previewPosition + index + width].classList.contains('taken')) ||
+                current.some(index => squares[previewPosition + index + width].classList.contains('floor'))) {
                 current.forEach(index => squares[previewPosition + index].classList.add('tetromino-preview'))
                 previewLocationFound = true
             } else if (previewPosition > maxWidth) {
@@ -196,8 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function moveDown() {
-        let overGround = current.some(index => squares[currentPosition + index + width].classList.contains('taken'))
-
+        let overGround = current.some(index => squares[currentPosition + index + width].classList.contains('taken')) || current.some(index => squares[currentPosition + index + width].classList.contains('floor'))
         undraw()
         if (!overGround) {
             currentPosition += width
@@ -207,7 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function freeze() {
-        if (current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
+        if (current.some(index => squares[currentPosition + index + width].classList.contains('taken')) ||
+            current.some(index => squares[currentPosition + index + width].classList.contains('floor'))) {
             if (usedBonusTick) {
                 undrawPreview()
                 stop = true
@@ -424,6 +433,35 @@ document.addEventListener('DOMContentLoaded', () => {
         if (current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
             scoreDisplay.innerHTML = 'end'
             clearInterval(timerId)
+            isGameOver = true
+            gameStarted = false
         }
+    }
+
+    function resetGame() {
+        isGameOver = false
+
+        squares.forEach(square => {
+            square.classList.remove('taken')
+            square.classList.remove('tetromino')
+            square.classList.remove('tetromino-preview')
+            square.style.backgroundColor = ''
+        })
+
+        displayHeldSquares.forEach(square => {
+            square.classList.remove('tetromino')
+            square.style.backgroundColor = ''
+        })
+
+        holdLock = false
+        isHolding = false
+
+        currentPosition = 4
+        currentRotation = 0
+        score = 0
+
+        scoreDisplay.innerHTML = score
+        random = Math.floor(Math.random() * theTetrominoes.length)
+        current = theTetrominoes[random][currentRotation]
     }
 })
