@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const scoreDisplay = document.querySelector('#score')
     const startButton = document.querySelector('#start-button')
+    const resetButton = document.querySelector('#reset-button')
 
     const grid = document.querySelector('.grid')
     const displayNextSquares = document.querySelectorAll('.mini-grid div')
@@ -122,9 +123,11 @@ document.addEventListener('DOMContentLoaded', () => {
             playingGame = false
             clearInterval(timerId)
             timerId = null
-        } else if (isGameOver) {
-            resetGame()
+            document.getElementById("reset-button").disabled = false
+            startButton.textContent = "Play"
         } else {
+            document.getElementById("reset-button").disabled = true
+            startButton.textContent = "Pause"
             startButton.blur()
             playingGame = true
             draw()
@@ -135,6 +138,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayShape()
                 gameStarted = true
             }
+        }
+    })
+
+    resetButton.addEventListener('click', () => {
+        if(!playingGame || isGameOver) {
+            resetGame()
+            resetButton.blur()
+        } else {
+            console.log('Pause game first')
         }
     })
 
@@ -435,6 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(timerId)
             isGameOver = true
             gameStarted = false
+            document.getElementById("reset-button").disabled = false
         }
     }
 
