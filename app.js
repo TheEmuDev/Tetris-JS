@@ -124,10 +124,10 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(timerId)
             timerId = null
             document.getElementById("reset-button").disabled = false
-            startButton.textContent = "Play"
+            startButton.innerHTML = "<i class=\"fas fa-play\"></i>"
         } else {
             document.getElementById("reset-button").disabled = true
-            startButton.textContent = "Pause"
+            startButton.innerHTML = "<i class=\"fas fa-pause\"></i>"
             startButton.blur()
             playingGame = true
             draw()
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     resetButton.addEventListener('click', () => {
-        if(!playingGame || isGameOver) {
+        if (!playingGame || isGameOver) {
             resetGame()
             resetButton.blur()
         } else {

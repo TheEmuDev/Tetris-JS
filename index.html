@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/4261772b68.js" crossorigin="anonymous"></script>
     <script src="app.js" charset="utf-8"></script>
     <link rel="stylesheet" href="style.css">
     </link>
@@ -12,10 +13,12 @@
 
 <body class="game-body">
 
-    <h3>Score:<span id="score"></span></h3>
-    <button id="start-button" class="button">Start</button>
-    <button id="reset-button" disabled class="button">Reset</button>
-    <div class="container">
+    <h3>Score: <span id="score"></span></h3>
+    <div class="button-container">
+        <button id="start-button" class="button"><i class="fas fa-play"></i></button>
+        <button id="reset-button" disabled class="button"><i class="fas fa-redo"></i></button>
+    </div>
+    <div class="container row">
         <div class="hold-grid">
             <div></div>
             <div></div>
