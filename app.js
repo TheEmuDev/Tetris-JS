@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetButton = document.querySelector('#reset-button')
 
     const grid = document.querySelector('.grid')
-    const displayNextSquares = document.querySelectorAll('.mini-grid div')
-    const displayHeldSquares = document.querySelectorAll('.hold-grid div')
+    const displayNextSquares = document.querySelectorAll('#next div')
+    const displayHeldSquares = document.querySelectorAll('#hold div')
 
     const displayWidth = 5
     const holdWidth = 5
