@@ -32,6 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let timerId
     let score = 0
 
+    // The Modal
+    const modal = document.getElementById('help-modal');
+    const modalOpenBtn = document.getElementById('help-button');
+    const modalCloseIcon = document.getElementById('close');
+
     /**
      * The Tetrominoes
      * [I] [O] [T] [J] [L] [S] [Z]
@@ -120,26 +125,34 @@ document.addEventListener('DOMContentLoaded', () => {
     // Start button functionality
     startButton.addEventListener('click', () => {
         if (timerId) {
-            playingGame = false
-            clearInterval(timerId)
-            timerId = null
-            document.getElementById("reset-button").disabled = false
-            startButton.innerHTML = "<i class=\"fas fa-play\"></i>"
+            pauseGame();
         } else {
-            document.getElementById("reset-button").disabled = true
-            startButton.innerHTML = "<i class=\"fas fa-pause\"></i>"
-            startButton.blur()
-            playingGame = true
-            draw()
-            findAndDrawPreview()
-            timerId = setInterval(moveDown, 1000)
-            if (!gameStarted) {
-                nextRandom = Math.floor(Math.random() * theTetrominoes.length)
-                displayShape()
-                gameStarted = true
-            }
+            playGame();
         }
     })
+
+    function pauseGame() {
+        playingGame = false;
+        clearInterval(timerId);
+        timerId = null;
+        document.getElementById("reset-button").disabled = false;
+        startButton.innerHTML = "<i class=\"fas fa-play\"></i>Play";
+    }
+
+    function playGame() {
+        document.getElementById("reset-button").disabled = true;
+        startButton.innerHTML = "<i class=\"fas fa-pause\"></i>Pause";
+        startButton.blur();
+        playingGame = true;
+        draw();
+        findAndDrawPreview();
+        timerId = setInterval(moveDown, 1000);
+        if (!gameStarted) {
+            nextRandom = Math.floor(Math.random() * theTetrominoes.length);
+            displayShape();
+            gameStarted = true;
+        }
+    }
 
     resetButton.addEventListener('click', () => {
         if (!playingGame || isGameOver) {
@@ -443,7 +456,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function gameOver() {
         if (current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
-            scoreDisplay.innerHTML = 'end'
+            // scoreDisplay.innerHTML = 'end'
             clearInterval(timerId)
             isGameOver = true
             gameStarted = false
@@ -476,5 +489,23 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreDisplay.innerHTML = score
         random = Math.floor(Math.random() * theTetrominoes.length)
         current = theTetrominoes[random][currentRotation]
+    }
+
+    modalOpenBtn.onclick = function () {
+        modal.style.display = "block";
+        pauseGame();
+        console.log('Modal is open');
+    }
+
+    modalCloseIcon.onclick = function () {
+        modal.style.display = "none";
+        console.log('Modal is closed')
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+            console.log('Modal is closed');
+        }
     }
 })
