@@ -10,20 +10,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const displayWidth = 5
     const holdWidth = 5
     const maxWidth = 199
+    const width = 10
 
     let displayIndex = 0
     let holdIndex = 0
 
-    let usedBonusTick = false
 
     let squares = Array.from(document.querySelectorAll('.grid div'))
 
-    const width = 10
     let nextRandom = 0
     let heldPiece = 0
 
+    let usedBonusTick = false
     let gameStarted = false
-    let playingGame = false
+    let isPaused = true
     let holdLock = false
     let isHolding = false
     let stop = false
@@ -126,13 +126,13 @@ document.addEventListener('DOMContentLoaded', () => {
     startButton.addEventListener('click', () => {
         if (timerId) {
             pauseGame();
-        } else {
+        } else if (!isGameOver) {
             playGame();
         }
     })
 
     function pauseGame() {
-        playingGame = false;
+        isPaused = true;
         clearInterval(timerId);
         timerId = null;
         document.getElementById("reset-button").disabled = false;
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("reset-button").disabled = true;
         startButton.innerHTML = "<i class=\"fas fa-pause\"></i>Pause";
         startButton.blur();
-        playingGame = true;
+        isPaused = false;
         draw();
         findAndDrawPreview();
         timerId = setInterval(moveDown, 1000);
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     resetButton.addEventListener('click', () => {
-        if (!playingGame || isGameOver) {
+        if (isPaused || isGameOver) {
             resetGame()
             resetButton.blur()
         } else {
@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function control(e) { // use website 'keycode.info' to find keyCode values
-        if (playingGame) {
+        if (!isPaused && !isGameOver) {
             if (e.keyCode === 87 || e.keyCode === 38) { // 'W' or up arrow
                 rotateRight()
             } else if (e.keyCode === 81) { // 'Q'
@@ -244,6 +244,8 @@ document.addEventListener('DOMContentLoaded', () => {
             current.some(index => squares[currentPosition + index + width].classList.contains('floor'))) {
             if (usedBonusTick) {
                 undrawPreview()
+                score++
+                scoreDisplay.innerHTML = score
                 stop = true
                 current.forEach(index => squares[currentPosition + index].classList.add('taken'))
                 //start a new tetromino
@@ -253,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 current = theTetrominoes[random][currentRotation]
                 currentPosition = 4
                 holdLock = false
-                addScore()
+                checkRow()
                 draw()
                 findAndDrawPreview()
                 displayShape()
@@ -435,13 +437,14 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
-    function addScore() {
+    function checkRow() {
+        let rowsFilled = 0
+
         for (let i = 0; i < maxWidth; i += width) {
             const row = [i, i + 1, i + 2, i + 3, i + 4, i + 5, i + 6, i + 7, i + 8, i + 9]
 
             if (row.every(index => squares[index].classList.contains('taken'))) {
-                score += 10
-                scoreDisplay.innerHTML = score
+                rowsFilled++
                 row.forEach(index => {
                     squares[index].classList.remove('taken')
                     squares[index].classList.remove('tetromino')
@@ -452,6 +455,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 squares.forEach(cell => grid.appendChild(cell))
             }
         }
+
+        scoreRows(rowsFilled)
+    }
+
+    function scoreRows(rowsFilled) {
+        if (rowsFilled === undefined) {
+            rowsFilled = 0
+        }
+
+        score += 10 * rowsFilled
+        if (rowsFilled === 4) {
+            score += 10
+        }
+
+        scoreDisplay.innerHTML = score
     }
 
     function gameOver() {
@@ -465,8 +483,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetGame() {
-        isGameOver = false
-
         squares.forEach(square => {
             square.classList.remove('taken')
             square.classList.remove('tetromino')
@@ -479,16 +495,22 @@ document.addEventListener('DOMContentLoaded', () => {
             square.style.backgroundColor = ''
         })
 
+        isGameOver = false
         holdLock = false
         isHolding = false
+        isPaused = true
 
         currentPosition = 4
         currentRotation = 0
         score = 0
 
         scoreDisplay.innerHTML = score
+        startButton.innerHTML = "<i class=\"fas fa-play\"></i>Play";
+
         random = Math.floor(Math.random() * theTetrominoes.length)
         current = theTetrominoes[random][currentRotation]
+        clearInterval(timerId)
+        timerId = null
     }
 
     modalOpenBtn.onclick = function () {
@@ -502,7 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Modal is closed')
     }
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
             console.log('Modal is closed');
