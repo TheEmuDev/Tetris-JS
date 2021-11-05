@@ -135,12 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
         isPaused = true;
         clearInterval(timerId);
         timerId = null;
-        document.getElementById("reset-button").disabled = false;
+        resetButton.disabled = false;
         startButton.innerHTML = "<i class=\"fas fa-play\"></i>Play";
     }
 
     function playGame() {
-        document.getElementById("reset-button").disabled = true;
+        resetButton.disabled = true;
         startButton.innerHTML = "<i class=\"fas fa-pause\"></i>Pause";
         startButton.blur();
         isPaused = false;
@@ -478,7 +478,8 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(timerId)
             isGameOver = true
             gameStarted = false
-            document.getElementById("reset-button").disabled = false
+            startButton.disabled = true
+            resetButton.disabled = false
         }
     }
 
@@ -506,6 +507,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         scoreDisplay.innerHTML = score
         startButton.innerHTML = "<i class=\"fas fa-play\"></i>Play";
+        startButton.disabled = false
+        resetButton.disabled = true
 
         random = Math.floor(Math.random() * theTetrominoes.length)
         current = theTetrominoes[random][currentRotation]
