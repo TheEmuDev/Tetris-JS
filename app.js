@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let i = 0
         while (!previewLocationFound) {
             previewPosition = currentPosition + i
-            if (current.some(index => squares[previewPosition + index + width].classList.contains('taken')) ||
+            if (current.some(index => squares[previewPosition + index + width].classList.contains('frozen')) ||
                 current.some(index => squares[previewPosition + index + width].classList.contains('floor'))) {
                 current.forEach(index => squares[previewPosition + index].classList.add('tetromino-preview'))
                 previewLocationFound = true
@@ -212,26 +212,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function control(e) { // use website 'keycode.info' to find keyCode values
         if (!isPaused && !isGameOver) {
-            if (e.keyCode === 87 || e.keyCode === 38) { // 'W' or up arrow
+            if (e.code === 'KeyW' || e.code === 'ArrowUp') {
                 rotateRight()
-            } else if (e.keyCode === 81) { // 'Q'
+            } else if (e.code === 'KeyQ' || e.code === 'ShiftRight') {
                 rotateLeft()
-            } else if (e.keyCode === 83 || e.keyCode === 40) { // 'S' or down arrow
+            } else if (e.code === 'KeyS' || e.code === 'ArrowDown') {
                 moveDown()
-            } else if (e.keyCode === 65 || e.keyCode === 37) { // 'A' or left arrow
+            } else if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
                 moveLeft()
-            } else if (e.keyCode === 68 || e.keyCode === 39) { // 'D' or right arrow
+            } else if (e.code === 'KeyD' || e.code === 'ArrowRight') {
                 moveRight()
-            } else if (e.keyCode === 32 || e.keyCode === 17) { // Space or 'CTRL' (both of them)
+            } else if (e.code === 'Space' || e.code === 'ControlRight') {
                 drop()
-            } else if (e.keyCode === 67) { // 'C'
+            } else if (e.code === 'KeyC' || e.code === 'Enter') {
                 hold()
             }
         }
     }
 
     function moveDown() {
-        let overGround = current.some(index => squares[currentPosition + index + width].classList.contains('taken')) || current.some(index => squares[currentPosition + index + width].classList.contains('floor'))
+        let overGround = current.some(index => squares[currentPosition + index + width].classList.contains('frozen')) || current.some(index => squares[currentPosition + index + width].classList.contains('floor'))
         undraw()
         if (!overGround) {
             currentPosition += width
@@ -241,14 +241,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function freeze() {
-        if (current.some(index => squares[currentPosition + index + width].classList.contains('taken')) ||
+        if (current.some(index => squares[currentPosition + index + width].classList.contains('frozen')) ||
             current.some(index => squares[currentPosition + index + width].classList.contains('floor'))) {
             if (usedBonusTick) {
                 undrawPreview()
                 score++
                 scoreDisplay.innerHTML = score
                 stop = true
-                current.forEach(index => squares[currentPosition + index].classList.add('taken'))
+                current.forEach(index => squares[currentPosition + index].classList.add('frozen'))
                 //start a new tetromino
                 currentRotation = 0
                 random = nextRandom
@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!isAtLeftEdge) currentPosition -= 1
 
-        if (current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
+        if (current.some(index => squares[currentPosition + index].classList.contains('frozen'))) {
             currentPosition += 1
         }
 
@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!isAtRightEdge) currentPosition += 1
 
-        if (current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
+        if (current.some(index => squares[currentPosition + index].classList.contains('frozen'))) {
             currentPosition -= 1
         }
 
@@ -444,10 +444,10 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < maxWidth; i += width) {
             const row = [i, i + 1, i + 2, i + 3, i + 4, i + 5, i + 6, i + 7, i + 8, i + 9]
 
-            if (row.every(index => squares[index].classList.contains('taken'))) {
+            if (row.every(index => squares[index].classList.contains('frozen'))) {
                 rowsFilled++
                 row.forEach(index => {
-                    squares[index].classList.remove('taken')
+                    squares[index].classList.remove('frozen')
                     squares[index].classList.remove('tetromino')
                     squares[index].style.backgroundColor = ''
                 })
@@ -474,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function gameOver() {
-        if (current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
+        if (current.some(index => squares[currentPosition + index].classList.contains('frozen'))) {
             // scoreDisplay.innerHTML = 'end'
             clearInterval(timerId)
             isGameOver = true
@@ -486,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetGame() {
         squares.forEach(square => {
-            square.classList.remove('taken')
+            square.classList.remove('frozen')
             square.classList.remove('tetromino')
             square.classList.remove('tetromino-preview')
             square.style.backgroundColor = ''
