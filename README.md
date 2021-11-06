@@ -19,4 +19,4 @@ This project started as a [tutorial](https://www.youtube.com/watch?v=rAUn1Lom6dw
         - Flip opponent's board upside-down for a duration
 
 ### Known Issues
-- After dropping a tetronimo without using quick drop, the next tetronimo will require 2 spacebar inputs to quick drop
+- After dropping a tetronimo without using quick drop, the next tetronimo will require 2 quick drop inputs to quick drop
