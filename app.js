@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreDisplay = document.querySelector('#score')
     const startButton = document.querySelector('#start-button')
     const resetButton = document.querySelector('#reset-button')
+    const powerUpButton = document.querySelector('#power-up-button');
 
     const grid = document.querySelector('.grid')
     const displayNextSquares = document.querySelectorAll('#next div')
@@ -533,4 +534,21 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Modal is closed');
         }
     }
+
+    powerUpButton.onclick = function () {
+        if (grid.style.filter === 'blur(5px)') {
+            grid.style.filter = 'blur(0px)';
+            console.log('unblur')
+            powerUpButton.blur();
+        } else {
+            grid.style.filter = 'blur(5px)';
+            console.log('blur');
+            powerUpButton.blur();
+        }
+    }
+
+    // 1-4 rows of junk to opponents board
+    // Blur opponents'board for a duration
+    // Reverse Opponents controls for a duration
+    // Flip opponent's board upside down
 })
