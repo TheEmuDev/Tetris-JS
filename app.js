@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function control(e) { // use website 'keycode.info' to find keyCode values
         if (!isPaused && !isGameOver) {
-            if (e.keyCode === 87 || e.keyCode === 38) {
+            if (e.code === 'KeyW' || e.code === 'ArrowUp') {
                 rotateRight()
             } else if (e.code === 'KeyQ' || e.code === 'ShiftRight') {
                 rotateLeft()
