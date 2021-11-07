@@ -8,6 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const displayNextSquares = document.querySelectorAll('#next div')
     const displayHeldSquares = document.querySelectorAll('#hold div')
 
+    const endContainer = document.querySelector('.end-container');
+    const finalScoreText = document.querySelector('.final-score');
+    const highScoreText = document.querySelector('.high-score');
+
     const displayWidth = 5
     const holdWidth = 5
     const maxWidth = 199
@@ -31,12 +35,26 @@ document.addEventListener('DOMContentLoaded', () => {
     let isGameOver = false
 
     let timerId
+    let blurredTimerId
     let score = 0
 
     // The Modal
     const modal = document.getElementById('help-modal');
     const modalOpenBtn = document.getElementById('help-button');
     const modalCloseIcon = document.getElementById('close');
+
+    // Local Storage
+    const setToLS = (key, value) => {
+        window.localStorage.setItem(key, JSON.stringify(value));
+    };
+
+    const getFromLS = key => {
+        const value = window.localStorage.getItem(key);
+
+        if (value) {
+            return JSON.parse(value);
+        }
+    }
 
     /**
      * The Tetrominoes
@@ -248,6 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 score++
                 scoreDisplay.innerHTML = score
                 stop = true
+                gameOver()
+
                 current.forEach(index => squares[currentPosition + index].classList.add('frozen'))
                 //start a new tetromino
                 currentRotation = 0
@@ -260,7 +280,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 draw()
                 findAndDrawPreview()
                 displayShape()
-                gameOver()
             } else {
                 usedBonusTick = true
             }
@@ -474,17 +493,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function gameOver() {
-        if (current.some(index => squares[currentPosition + index].classList.contains('frozen'))) {
+        if (current.some(index => squares[currentPosition + index].classList.contains('frozen')) && currentPosition < width) {
             // scoreDisplay.innerHTML = 'end'
             clearInterval(timerId)
             isGameOver = true
             gameStarted = false
             startButton.disabled = true
             resetButton.disabled = false
+            // console.log(score);
+
+            // Set the high score and final score
+            finalScoreText.innerText = `Final Score: ${ score }`;
+
+            // Set and Retrieve High Score
+            if (getFromLS('high-score') < score) {
+                setToLS('high-score', score);
+                highScoreText.innerText = `New High Score!`;
+            } else {
+                highScoreText.innerText = `High Score: ${ getFromLS('high-score') }`;
+            }
+
+
+
+
+            // blur game and show the end container
+            blurGrid();
+            endContainer.style.opacity = 1;
+            // call to some function that blurs screen and displays game over
         }
     }
 
     function resetGame() {
+        // Hide the end container
+        unblurGrid();
+        endContainer.style.opacity = 0;
+
         squares.forEach(square => {
             square.classList.remove('frozen')
             square.classList.remove('tetromino')
@@ -537,14 +580,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Temporary onclick blurTest
     powerUpButton.onclick = function () {
-        if (grid.style.filter === 'blur(5px)') {
-            grid.style.filter = 'blur(0px)';
-            console.log('unblur')
+        if (!blurredTimerId) {
+            blurGrid();
             powerUpButton.blur();
-        } else {
-            grid.style.filter = 'blur(5px)';
-            console.log('blur');
-            powerUpButton.blur();
+            blurredTimerId = setInterval(unblurGrid, 30000); // run unblur in 30 sec
         }
     }
+
+    function blurGrid() {
+        grid.style.filter = 'blur(5px)';
+        console.log('blur');
+    }
+
+    function unblurGrid() {
+        grid.style.filter = 'blur(0px)';
+        console.log('unblur');
+        clearInterval(blurredTimerId);
+        blurredTimerId = null;
+    }
+
 })

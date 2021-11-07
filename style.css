@@ -104,13 +104,14 @@ header {
     opacity: 0;
     z-index: 2;
     position: absolute;
-    height: 128px;
+    height: 168px;
     width: 75%;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
     border: 2px solid gold;
+    background: darkgrey;
 }
 
 .end-text {
