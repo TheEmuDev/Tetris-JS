@@ -333,6 +333,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         current = theTetrominoes[random][currentRotation]
 
+        // if rotation collides with frozen blocks, undo it
+        if (current.some(index => squares[currentPosition + index].classList.contains('frozen'))) {
+            currentRotation--
+            if (currentRotation < 0) {
+                currentRotation = current.length - 1
+            }
+            current = theTetrominoes[random][currentRotation]
+        }
+
         // if current tetris piece was at right edge before rotating,
         // check if piece bled into next row after rotation
         // move piece left to correct rightward slide, repeat once if necessary (iTetromino piece will need 2 moves)
@@ -372,6 +381,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         current = theTetrominoes[random][currentRotation]
+
+        // if rotation collides with frozen blocks, undo it
+        if (current.some(index => squares[currentPosition + index].classList.contains('frozen'))) {
+            currentRotation++
+            if (currentRotation >= current.length) {
+                currentRotation = 0
+            }
+            current = theTetrominoes[random][currentRotation]
+        }
 
         // if current tetris piece was at right edge before rotating,
         // check if piece bled into next row after rotation
