@@ -535,6 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Temporary onclick blurTest
     powerUpButton.onclick = function () {
         if (grid.style.filter === 'blur(5px)') {
             grid.style.filter = 'blur(0px)';
@@ -546,9 +547,4 @@ document.addEventListener('DOMContentLoaded', () => {
             powerUpButton.blur();
         }
     }
-
-    // 1-4 rows of junk to opponents board
-    // Blur opponents'board for a duration
-    // Reverse Opponents controls for a duration
-    // Flip opponent's board upside down
 })
