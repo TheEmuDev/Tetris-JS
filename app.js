@@ -262,23 +262,37 @@ document.addEventListener('DOMContentLoaded', () => {
         if (current.some(index => squares[currentPosition + index + width].classList.contains('frozen')) ||
             current.some(index => squares[currentPosition + index + width].classList.contains('floor'))) {
             if (usedBonusTick) {
+                // Preview is over
                 undrawPreview()
+                // Score increments
                 score++
-                scoreDisplay.innerHTML = score
+                // Set the scoreDisplay to score
+                scoreDisplay.innerText = score
+                // Stop the game
                 stop = true
+                // Run game over
                 gameOver()
-
+                // freeze the current piece
                 current.forEach(index => squares[currentPosition + index].classList.add('frozen'))
                 //start a new tetromino
                 currentRotation = 0
+                // The current tetronimo is set to what was up next
                 random = nextRandom
+                // The next random tetronimo is generated
                 nextRandom = Math.floor(Math.random() * theTetrominoes.length)
+                // the current tetronimo is now set
                 current = theTetrominoes[random][currentRotation]
+                // currentPosition ??
                 currentPosition = 4
+                // Hold lock is taken off for the next turn
                 holdLock = false
+                // run checkRow
                 checkRow()
+                // Draw next set
                 draw()
+                // Draw the Preview
                 findAndDrawPreview()
+                // ??
                 displayShape()
             } else {
                 usedBonusTick = true
