@@ -514,7 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         rowsCleared += rowsFilled
-        if (rowsCleared >= (currentLevel * 10) && currentLevel < levelMax) {
+        if (rowsCleared >= (currentLevel * 10) + 10 && currentLevel < levelMax) {
             levelUp()
         }
         scoreRows(rowsFilled)
@@ -551,6 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(timerId)
         timerId = setInterval(moveDown, tickRate)
     }
+
 
     function gameOver() {
         if (current.some(index => squares[currentPosition + index].classList.contains('frozen')) && currentPosition < width) {
