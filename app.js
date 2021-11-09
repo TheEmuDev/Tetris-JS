@@ -276,20 +276,37 @@ document.addEventListener('DOMContentLoaded', () => {
         if (current.some(index => squares[currentPosition + index + width].classList.contains('frozen')) ||
             current.some(index => squares[currentPosition + index + width].classList.contains('floor'))) {
             if (usedBonusTick) {
+                // Preview is over
                 undrawPreview()
+                // Score increments
+                score++
+                // Set the scoreDisplay to score
+                scoreDisplay.innerText = score
+                // Stop the game
                 stop = true
+                // Run game over
                 gameOver()
+                // freeze the current piece
                 current.forEach(index => squares[currentPosition + index].classList.add('frozen'))
                 //start a new tetromino
                 currentRotation = 0
+                // The current tetronimo is set to what was up next
                 random = nextRandom
+                // The next random tetronimo is generated
                 nextRandom = Math.floor(Math.random() * theTetrominoes.length)
+                // the current tetronimo is now set
                 current = theTetrominoes[random][currentRotation]
+                // currentPosition ??
                 currentPosition = 4
+                // Hold lock is taken off for the next turn
                 holdLock = false
+                // run checkRow
                 checkRow()
+                // Draw next set
                 draw()
+                // Draw the Preview
                 findAndDrawPreview()
+                // ??
                 displayShape()
                 gameOver()
             } else {
@@ -470,7 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Drops current Tetris piece to the ground immediately
-     * Adds 
+     * Adds
      */
     function drop() {
         while (!stop) {
@@ -522,7 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Adds to the score using the score multiplier based on rows filled
-     * @param {number} rowsFilled 
+     * @param {number} rowsFilled
      */
     function scoreRows(rowsFilled) {
         let rowScore = 0
@@ -542,7 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * The tick rate in seconds is calculated using the following formula
-     *  t = (level 1 tickRate - ((currentLevel-1)*.0.007))^(currentLevel-1) 
+     *  t = (level 1 tickRate - ((currentLevel-1)*.0.007))^(currentLevel-1)
      *  (t->5) * 1000 = 355.19 ms -> 355 ms (after Math.floor)
      */
     function levelUp() {
