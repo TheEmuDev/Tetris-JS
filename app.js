@@ -12,6 +12,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const finalScoreText = document.querySelector('.final-score');
     const highScoreText = document.querySelector('.high-score');
 
+    const scoreBase = [0, 40, 100, 300, 1200];
+
+    let squares = Array.from(document.querySelectorAll('.grid div'))
+
+
+
+    // lines to level up = currentLevel * 10 + 10
+    const levelStart = 1
+    const levelMax = 15
+    const tickRateStart = 800
+    const tickRateBase = 0.8
+
     const displayWidth = 5
     const holdWidth = 5
     const maxWidth = 199
@@ -19,9 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let displayIndex = 0
     let holdIndex = 0
-
-
-    let squares = Array.from(document.querySelectorAll('.grid div'))
+    let rowsCleared = 0
 
     let nextRandom = 0
     let heldPiece = 0
@@ -33,6 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let isHolding = false
     let stop = false
     let isGameOver = false
+
+    let currentLevel = levelStart
+    let tickRate = tickRateStart
 
     let timerId
     let blurredTimerId
@@ -165,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isPaused = false;
         draw();
         findAndDrawPreview();
-        timerId = setInterval(moveDown, 1000);
+        timerId = setInterval(moveDown, tickRate);
         if (!gameStarted) {
             nextRandom = Math.floor(Math.random() * theTetrominoes.length);
             displayShape();
@@ -250,6 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function moveDown() {
         let overGround = current.some(index => squares[currentPosition + index + width].classList.contains('frozen')) || current.some(index => squares[currentPosition + index + width].classList.contains('floor'))
+        console.log(`tick rate: ${tickRate}`)
         undraw()
         if (!overGround) {
             currentPosition += width
@@ -294,6 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 findAndDrawPreview()
                 // ??
                 displayShape()
+                gameOver()
             } else {
                 usedBonusTick = true
             }
@@ -446,6 +461,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayHeldSquares[holdIndex + index].style.backgroundColor = colors[random]
             })
 
+            currentRotation = 0
+
             if (!isHolding) {
                 heldPiece = random
                 random = nextRandom
@@ -468,12 +485,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    /**
+     * Drops current Tetris piece to the ground immediately
+     * Adds
+     */
     function drop() {
         while (!stop) {
+            score++
             moveDown()
             freeze()
         }
 
+        scoreDisplay.innerHTML = score
         stop = false
     }
 
@@ -507,21 +530,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 squares.forEach(cell => grid.appendChild(cell))
             }
         }
-
+        rowsCleared += rowsFilled
+        if (rowsCleared >= (currentLevel * 10) && currentLevel < levelMax) {
+            levelUp()
+        }
         scoreRows(rowsFilled)
     }
 
+    /**
+     * Adds to the score using the score multiplier based on rows filled
+     * @param {number} rowsFilled
+     */
     function scoreRows(rowsFilled) {
+        let rowScore = 0
         if (rowsFilled === undefined) {
             rowsFilled = 0
+        } else if (rowsFilled >= scoreBase.length) {
+            rowsFilled = 4
         }
 
-        score += 10 * rowsFilled
-        if (rowsFilled === 4) {
-            score += 10
-        }
-
+        rowScore = (scoreBase[rowsFilled] * (currentLevel + 1))
+        score += rowScore
         scoreDisplay.innerHTML = score
+        console.log(`rows cleared: ${rowsCleared}`)
+        console.log(`score added: ${rowScore}`)
+        console.log(`current level: ${currentLevel}`)
+    }
+
+    /**
+     * The tick rate in seconds is calculated using the following formula
+     *  t = (level 1 tickRate - ((currentLevel-1)*.0.007))^(currentLevel-1)
+     *  (t->5) * 1000 = 355.19 ms -> 355 ms (after Math.floor)
+     */
+    function levelUp() {
+        let newTickRateBase = (tickRateBase - ((++currentLevel - 1) * 0.007))
+        tickRate = Math.floor(Math.pow(newTickRateBase, (currentLevel - 1)) * 1000)
+        clearInterval(timerId)
+        timerId = setInterval(moveDown, tickRate)
     }
 
     function gameOver() {
@@ -544,8 +589,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 highScoreText.innerText = `High Score: ${ getFromLS('high-score') }`;
             }
-
-
 
 
             // blur game and show the end container
@@ -580,6 +623,9 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPosition = 4
         currentRotation = 0
         score = 0
+        rowsCleared = 0
+        currentLevel = levelStart
+        tickRate = tickRateStart
 
         scoreDisplay.innerHTML = score
         startButton.innerHTML = "<i class=\"fas fa-play\"></i>Play";
