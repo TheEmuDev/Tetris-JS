@@ -32,3 +32,4 @@ This project started as a [tutorial](https://www.youtube.com/watch?v=rAUn1Lom6dw
 ---
 ### Known Issues
 - After dropping a tetronimo without using quick drop, the next tetronimo will require 2 quick drop inputs to quick drop
+- The local Highscore is not stored correctly when using the Opera GX browser
