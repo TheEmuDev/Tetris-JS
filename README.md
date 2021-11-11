@@ -11,6 +11,10 @@ This project started as a [tutorial](https://www.youtube.com/watch?v=rAUn1Lom6dw
             - t = ((Base Tick Rate - ((currentLevel-1) x .0.007))^(currentLevel-1) x 1000)
             - Base Tick Rate is equal to the tick rate at level 1 (800 ms)
             - The output of the tick rate formula is in milliseconds, and any decimal remainder is dropped using Math.floor
+- Local Highscore is saved, displayed during game over screen
+- Visual updates to the UI
+    - New Gameover Tile is displayed when game ends
+    - New Icons on buttons
 
 ---
 ## In Progress

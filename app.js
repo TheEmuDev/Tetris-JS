@@ -1,60 +1,70 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const scoreDisplay = document.querySelector('#score')
+    // Buttons
     const startButton = document.querySelector('#start-button')
     const resetButton = document.querySelector('#reset-button')
-    const powerUpButton = document.querySelector('#power-up-button');
+    const powerUpButton = document.querySelector('#power-up-button'); // for testing the blur attack
 
+    // Grids 
     const grid = document.querySelector('.grid')
     const displayNextSquares = document.querySelectorAll('#next div')
     const displayHeldSquares = document.querySelectorAll('#hold div')
 
+    // Help Model
+    const modal = document.getElementById('help-modal');
+    const modalOpenBtn = document.getElementById('help-button');
+    const modalCloseIcon = document.getElementById('close');
+
+    // Gameover Panel
     const endContainer = document.querySelector('.end-container');
     const finalScoreText = document.querySelector('.final-score');
     const highScoreText = document.querySelector('.high-score');
 
-    const scoreBase = [0, 40, 100, 300, 1200];
+    // Score text
+    const scoreDisplay = document.querySelector('#score')
 
     let squares = Array.from(document.querySelectorAll('.grid div'))
 
-
-
-    // lines to level up = currentLevel * 10 + 10
+    // constant literals
+    const scoreBase = [0, 40, 100, 300, 1200];
     const levelStart = 1
     const levelMax = 15
     const tickRateStart = 800
     const tickRateBase = 0.8
 
+    // width of a square in the smaller side grids
     const displayWidth = 5
     const holdWidth = 5
-    const maxWidth = 199
-    const width = 10
 
+
+    const maxWidth = 199 // index for the bottom right corner
+    const width = 10 // width of a single square in main game board
+
+    // index that decides which tetris piece is painted in the smaller grids
     let displayIndex = 0
     let holdIndex = 0
-    let rowsCleared = 0
 
     let nextRandom = 0
     let heldPiece = 0
 
+    // boolean flags
     let usedBonusTick = false
     let gameStarted = false
     let isPaused = true
     let holdLock = false
     let isHolding = false
-    let stop = false
+    let stopMoving = false
     let isGameOver = false
 
     let currentLevel = levelStart
     let tickRate = tickRateStart
 
     let timerId
-    let blurredTimerId
-    let score = 0
+    let blurredTimerId // used in blur attack testing 
 
-    // The Modal
-    const modal = document.getElementById('help-modal');
-    const modalOpenBtn = document.getElementById('help-button');
-    const modalCloseIcon = document.getElementById('close');
+    let score = 0
+    let rowsCleared = 0
+
+
 
     // Local Storage
     const setToLS = (key, value) => {
@@ -124,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         [2, width + 1, width + 2, width * 2 + 1]
     ]
 
+    // parallel arrays: iTetromino will have color cyan, oTetromino will have color yellow, etc
     const theTetrominoes = [iTetromino, oTetromino, tTetromino, lTetromino, jTetromino, sTetromino, zTetromino]
     const colors = ['cyan', 'yellow', 'orchid', 'orangered', 'blue', 'green', 'crimson']
 
@@ -181,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timerId = setInterval(moveDown, tickRate);
         if (!gameStarted) {
             nextRandom = Math.floor(Math.random() * theTetrominoes.length);
-            displayShape();
+            displayNextPiece();
             gameStarted = true;
         }
     }
@@ -191,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resetGame()
             resetButton.blur()
         } else {
-            console.log('Pause game first')
+            console.log('This button should be disabled. How did you click this?')
         }
     })
 
@@ -211,12 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
-    function drawPreview() {
-        current.forEach(index => {
-            squares[previewPosition + index].classList.add('tetromino-preview')
-        })
-    }
-
     function undrawPreview() {
         current.forEach(index => {
             squares[previewPosition + index].classList.remove('tetromino-preview')
@@ -233,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 current.forEach(index => squares[previewPosition + index].classList.add('tetromino-preview'))
                 previewLocationFound = true
             } else if (previewPosition > maxWidth) {
-                console.log("Error")
+                console.log("Error finding preview location")
                 break
             } else {
                 i += width
@@ -276,42 +281,44 @@ document.addEventListener('DOMContentLoaded', () => {
         if (current.some(index => squares[currentPosition + index + width].classList.contains('frozen')) ||
             current.some(index => squares[currentPosition + index + width].classList.contains('floor'))) {
             if (usedBonusTick) {
-                // Preview is over
+                // undraw the preview
                 undrawPreview()
-                // Score increments
-                score++
-                // Set the scoreDisplay to score
-                scoreDisplay.innerText = score
-                // Stop the game
-                stop = true
-                // Run game over
+                // flip the flag indicating that the current piece will be frozen
+                stopMoving = true
+                // check if gameOver requirements are met
                 gameOver()
-                // freeze the current piece
+                // freeze current piece
                 current.forEach(index => squares[currentPosition + index].classList.add('frozen'))
+
                 //start a new tetromino
+
+                // reset rotation
                 currentRotation = 0
-                // The current tetronimo is set to what was up next
+                // use the forecasted piece
                 random = nextRandom
-                // The next random tetronimo is generated
+                // decide what the next piece is going to be
                 nextRandom = Math.floor(Math.random() * theTetrominoes.length)
-                // the current tetronimo is now set
+                // set the current piece
                 current = theTetrominoes[random][currentRotation]
-                // currentPosition ??
+                // move the current piece to the top of the board
                 currentPosition = 4
-                // Hold lock is taken off for the next turn
+                // unlock hold ability
                 holdLock = false
-                // run checkRow
+                // check to see if any rows are filled with pieces
                 checkRow()
-                // Draw next set
+                // draw the new tetris pieces to the board
                 draw()
-                // Draw the Preview
+                // calculate where the drop preview should be and draw it
                 findAndDrawPreview()
-                // ??
-                displayShape()
+                // display forecasted piece in the side grid
+                displayNextPiece()
+                // check if gameOver  requirements are met
                 gameOver()
             } else {
+                // flip flag indicating that the piece will be locked in the next game tick
                 usedBonusTick = true
             }
+            // reset wiggle room flag if no longer above the floor
         } else if (usedBonusTick) {
             usedBonusTick = false
         }
@@ -469,7 +476,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 nextRandom = Math.floor(Math.random() * theTetrominoes.length)
                 current = theTetrominoes[random][currentRotation]
                 isHolding = true
-                displayShape()
+                displayNextPiece()
             } else {
                 // if piece is being held, use the held piece
                 current = theTetrominoes[heldPiece][currentRotation]
@@ -487,20 +494,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Drops current Tetris piece to the ground immediately
-     * Adds
+     * Adds 1 point for every square the piece travels through on the way down
      */
     function drop() {
-        while (!stop) {
+        while (!stopMoving) {
             score++
             moveDown()
             freeze()
         }
 
         scoreDisplay.innerHTML = score
-        stop = false
+        stopMoving = false
     }
 
-    function displayShape() {
+    function displayNextPiece() {
         // remove current tetromino
         displayNextSquares.forEach(square => {
             square.classList.remove('tetromino')
