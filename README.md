@@ -1,5 +1,5 @@
 # Tetris-JS
-This project started as a [tutorial](https://www.youtube.com/watch?v=rAUn1Lom6dw) by freeCodeCamp 
+Tetris clone written in JavaScript 
 
 # Upcoming Features
 - Game tick speed increase over time
