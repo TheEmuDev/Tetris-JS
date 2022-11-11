@@ -1,5 +1,5 @@
 # Tetris-JS
-This project started as a [tutorial](https://www.youtube.com/watch?v=rAUn1Lom6dw) by freeCodeCamp 
+Tetris clone written in JavaScript 
 
 ## Recent Changes
 - Scoring System is now calculated by multiplying the score base by one plus the current level
@@ -15,7 +15,6 @@ This project started as a [tutorial](https://www.youtube.com/watch?v=rAUn1Lom6dw
 - Visual updates to the UI
     - New Gameover Tile is displayed when game ends
     - New Icons on buttons
-
 ---
 ## In Progress
 - UI overhaul
