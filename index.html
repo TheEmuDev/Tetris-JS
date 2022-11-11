@@ -1,19 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="app.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="style.css"></link>
-        <title>Basic Tetris</title>
-    </head>
-    <body class="game-body">
 
-        <h3>Score:<span id="score"></span></h3>
-        <button id="start-button">Start/Pause</button>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/4261772b68.js" crossorigin="anonymous"></script>
+    <script src="app.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="style.css">
+    </link>
+    <title>Basic Tetris</title>
+</head>
 
-        <div class="container">
-            <div class="hold-grid">
+<body class="game-body">
+    <!-- Header -->
+    <header>
+        <h1>Welcome to Tetris</h1>
+    </header>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <i class="fas fa-times" id="close"></i>
+            <p>Some text in the Modal..</p>
+        </div>
+    </div>
+
+    <!-- Button container -->
+    <div class="button-container">
+        <button id="start-button" class="button">
+            <i class="fas fa-play"></i>
+            Play
+        </button>
+        <button id="reset-button" disabled class="button">
+            <i class="fas fa-redo"></i>
+            Reset
+        </button>
+        <button id="help-button" class="button">
+            <i class="fas fa-question-circle"></i>
+            Help
+        </button>
+        <button id="power-up-button" class="button">
+            <i class="fas fa-times" id="power-up-icon"></i>
+            Blur
+        </button>
+    </div>
+
+    <!-- Main game container -->
+    <div class="container row">
+        <div class="grid-left">
+            <div class="mini-grid" id="hold">
                 <div></div>
                 <div></div>
                 <div></div>
@@ -40,8 +75,11 @@
                 <div></div>
                 <div></div>
             </div>
-            <t class="label">Hold</t>
+            <h1 class="label">Hold</h1>
+            <h2 class="h_score">Score: <span id="score"></span></h2>
+        </div>
 
+        <div class="grid-container">
             <div class="grid">
                 <div></div>
                 <div></div>
@@ -243,46 +281,59 @@
                 <div></div>
                 <div></div>
                 <div></div>
-                <div class="taken"></div>
-                <div class="taken"></div>
-                <div class="taken"></div>
-                <div class="taken"></div>
-                <div class="taken"></div>
-                <div class="taken"></div>
-                <div class="taken"></div>
-                <div class="taken"></div>
-                <div class="taken"></div>
-                <div class="taken"></div>
+                <div class="floor"></div>
+                <div class="floor"></div>
+                <div class="floor"></div>
+                <div class="floor"></div>
+                <div class="floor"></div>
+                <div class="floor"></div>
+                <div class="floor"></div>
+                <div class="floor"></div>
+                <div class="floor"></div>
+                <div class="floor"></div>
             </div>
-
-            <div class="mini-grid">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+            <div class="end-container">
+                <h1 class="end-text">GAME OVER</h1>
+                <h3 class="final-score">final score: 69</h3>
+                <h3 class="high-score">high score: 420</h3> <!-- or New High Score! -->
             </div>
-            <t class="label">Next</t>
         </div>
-    </body>
+
+        <div class="grid-right">
+            <div class="mini-grid" id="next">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <h1 class="label">Next</h1>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer>
+
+    </footer>
+</body>
+
 </html>
